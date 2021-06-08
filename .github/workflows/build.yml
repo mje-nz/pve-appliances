@@ -1,0 +1,22 @@
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+      - name: Install DAB
+        run: |
+          wget http://download.proxmox.com/debian/dists/buster/pve-no-subscription/binary-amd64/dab_3.1-3_all.deb
+          # Will fail due to missing dependencies
+          sudo dpkg -i dab_3.1-3_all.deb || true
+          sudo apt-get update
+          sudo apt-get --fix-broken -y install
+          sudo apt-get -y install lxc-templates
+      - name: Build debian-minimal
+        run: cd debian-minimal && sudo make
+      - name: Upload built templates
+        uses: kittaakos/upload-artifact-as-is@v0.0.1
+        with:
+          path: '*/*.tar.gz'
