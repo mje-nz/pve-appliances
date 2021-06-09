@@ -1,4 +1,8 @@
-on: push
+on:
+  push:
+  schedule:
+    # Every Sunday
+    - cron: '0 0 * * SUN'
 
 jobs:
   build:
@@ -20,3 +24,8 @@ jobs:
         uses: kittaakos/upload-artifact-as-is@v0.0.1
         with:
           path: '*/*.tar.gz'
+      - name: Release
+        if: github.event_name == 'schedule'
+        run: gh release create "$(date '+%Y.%m.%d')" --notes "Automatic build completed at $(date --rfc-3339=seconds)" */*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
