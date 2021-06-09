@@ -1,6 +1,8 @@
 BASEDIR:=$(shell dab basedir)
 
 all: info/init_ok
+	# Update version
+	sed -i "s/Version: .*/Version: $$(date '+%Y.%m.%d')/" dab.conf
 	# Set up container with as little as DAB will allow pre-installed
 	dab bootstrap --minimal
 	# Remove unnecessary packages
@@ -14,8 +16,7 @@ all: info/init_ok
 	dab finalize
 
 info/init_ok: dab.conf
-	dab init
-	touch $@
+	dab init && touch $@
 
 .PHONY: clean
 clean:
