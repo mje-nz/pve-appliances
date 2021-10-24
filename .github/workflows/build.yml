@@ -1,8 +1,8 @@
 on:
   push:
   schedule:
-    # Every Sunday
-    - cron: '0 0 * * SUN'
+    # First day of every month
+    - cron: '0 0 1 * *'
 
 jobs:
   build:
